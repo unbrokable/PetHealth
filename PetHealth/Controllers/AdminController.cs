@@ -13,13 +13,13 @@ using Tutor.DAL;
 namespace PetHealth.Controllers
 {
     [Authorize(Roles = nameof(Role.Admin))]
-    [Route("api/[controller]")]
+    [Route("api/[controller]/users")]
     [ApiController]
-    public class UsersController : ControllerBase
+    public class AdminController : ControllerBase
     {
         private readonly ApplicationContext _applicationContext;
         private readonly IMapper _mapper;
-        public UsersController(ApplicationContext applicationContext, IMapper mapper)
+        public AdminController(ApplicationContext applicationContext, IMapper mapper)
         {
             this._applicationContext = applicationContext;
             this._mapper = mapper;

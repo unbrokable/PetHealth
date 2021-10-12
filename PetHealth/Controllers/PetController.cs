@@ -40,9 +40,14 @@ namespace PetHealth.Controllers
                 .Map<IEnumerable<PetClinicViewModel>>(result);
         }
 
-        [HttpGet("users/id")]
-        public async Task<IEnumerable<PetViewModel>> GetUserPets(int id)
+        [HttpGet]
+        public async Task<IEnumerable<PetViewModel>> GetUserPets()
         {
+            int id = (await _applicationContex
+                .Users
+                .FirstOrDefaultAsync(i => i.Email == User.GetEmail())
+                ).Id;
+
             var result = await _applicationContex
                 .Pets
                 .Where(i => i.UserId == id)

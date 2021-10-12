@@ -16,14 +16,14 @@ namespace PetHealth.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class AuthorizeController : ControllerBase
+    public class AccountController : ControllerBase
     {
         private readonly ApplicationContext _dataBase;
         private readonly IMapper _mapper;
         private readonly IJwtAuthorizationService _authorizationService;
         private readonly IConfiguration _configuration;
 
-        public AuthorizeController(ApplicationContext dataBase, IMapper mapper, IJwtAuthorizationService authorizationService,
+        public AccountController(ApplicationContext dataBase, IMapper mapper, IJwtAuthorizationService authorizationService,
             IConfiguration configuration)
         {
             this._configuration = configuration;
