@@ -8,7 +8,6 @@ namespace PetHealth.Models.HealthRecord
         public decimal Temperature { get; set; }
         public string Pulse { get; set; }
         public decimal Weight { get; set; }
-        public DateTime Date { get; set; }
         public int PetId { get; set; }
     }
 }

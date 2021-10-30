@@ -28,17 +28,15 @@ namespace PetHealth.DAL.Migrations
                 name: "Clinics",
                 columns: table => new
                 {
-                    UserId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    UserId1 = table.Column<int>(type: "int", nullable: false),
+                    Id = table.Column<int>(type: "int", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Clinics", x => x.UserId);
+                    table.PrimaryKey("PK_Clinics", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Clinics_Users_UserId1",
-                        column: x => x.UserId1,
+                        name: "FK_Clinics_Users_Id",
+                        column: x => x.Id,
                         principalTable: "Users",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -73,7 +71,7 @@ namespace PetHealth.DAL.Migrations
                     PetId = table.Column<int>(type: "int", nullable: false),
                     ClinicId = table.Column<int>(type: "int", nullable: false),
                     LastDate = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    ClinicUserId = table.Column<int>(type: "int", nullable: true),
+                    ClinicId1 = table.Column<int>(type: "int", nullable: true),
                     PetId1 = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
@@ -83,12 +81,12 @@ namespace PetHealth.DAL.Migrations
                         name: "FK_ClinicPets_Clinics_ClinicId",
                         column: x => x.ClinicId,
                         principalTable: "Clinics",
-                        principalColumn: "UserId");
+                        principalColumn: "Id");
                     table.ForeignKey(
-                        name: "FK_ClinicPets_Clinics_ClinicUserId",
-                        column: x => x.ClinicUserId,
+                        name: "FK_ClinicPets_Clinics_ClinicId1",
+                        column: x => x.ClinicId1,
                         principalTable: "Clinics",
-                        principalColumn: "UserId",
+                        principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_ClinicPets_Pets_PetId",
@@ -124,7 +122,7 @@ namespace PetHealth.DAL.Migrations
                         name: "FK_HealthRecords_Clinics_ClinicId",
                         column: x => x.ClinicId,
                         principalTable: "Clinics",
-                        principalColumn: "UserId");
+                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_HealthRecords_Pets_PetId",
                         column: x => x.PetId,
@@ -133,9 +131,9 @@ namespace PetHealth.DAL.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_ClinicPets_ClinicUserId",
+                name: "IX_ClinicPets_ClinicId1",
                 table: "ClinicPets",
-                column: "ClinicUserId");
+                column: "ClinicId1");
 
             migrationBuilder.CreateIndex(
                 name: "IX_ClinicPets_PetId",
@@ -146,11 +144,6 @@ namespace PetHealth.DAL.Migrations
                 name: "IX_ClinicPets_PetId1",
                 table: "ClinicPets",
                 column: "PetId1");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Clinics_UserId1",
-                table: "Clinics",
-                column: "UserId1");
 
             migrationBuilder.CreateIndex(
                 name: "IX_HealthRecords_ClinicId",

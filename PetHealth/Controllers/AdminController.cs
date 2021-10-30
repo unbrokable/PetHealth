@@ -12,7 +12,7 @@ using Tutor.DAL;
 
 namespace PetHealth.Controllers
 {
-    [Authorize(Roles = nameof(Role.Admin))]
+ 
     [Route("api/[controller]/users")]
     [ApiController]
     public class AdminController : ControllerBase
@@ -66,12 +66,13 @@ namespace PetHealth.Controllers
                 .SaveChangesAsync();
         }
 
-        [HttpPatch("{id}")]
+        [HttpPut("{id}")]
         public async Task RestoreUser(int id)
         {
             var user = new User
             {
-                Id = id
+                Id = id,
+                IsDeleted = true
             };
 
             _applicationContext
@@ -95,6 +96,18 @@ namespace PetHealth.Controllers
 
             await _applicationContext
               .SaveChangesAsync();
+        }
+
+        [HttpPost("damp")]
+        public async Task Damp(string location)
+        {
+            string dbname = _applicationContext.Database.GetDbConnection().ConnectionString;
+            string sqlCommand = @"BACKUP DATABASE [{0}] TO  DISK = N'{1}' WITH NOFORMAT, NOINIT,  NAME = N'MyAir-Full Database Backup', SKIP, NOREWIND, NOUNLOAD,  STATS = 10";
+            
+            _applicationContext
+                .Database
+                .ExecuteSqlRaw 
+                (string.Format(sqlCommand, dbname, location));
         }
      }
 }

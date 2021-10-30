@@ -8,7 +8,7 @@ using MailKit.Net.Smtp;
 
 namespace PetHealth.Services
 {
-    public class EmailManager 
+    public class EmailManager
     {
         public async Task SendMessage(IEnumerable<string> emails, string subject, string message)
         {
@@ -27,7 +27,6 @@ namespace PetHealth.Services
             await client.ConnectAsync("smtp.gmail.com", 587);
             await client.AuthenticateAsync("deonisij340@gmail.com", "School114denis");
             await client.SendAsync(emailMessage);
-
             await client.DisconnectAsync(true);
         }
     }

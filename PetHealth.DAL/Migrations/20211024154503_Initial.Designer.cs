@@ -10,7 +10,7 @@ using Tutor.DAL;
 namespace PetHealth.DAL.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    [Migration("20211011203116_Initial")]
+    [Migration("20211024154503_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -23,21 +23,14 @@ namespace PetHealth.DAL.Migrations
 
             modelBuilder.Entity("PetHealth.DAL.Entities.Clinic", b =>
                 {
-                    b.Property<int>("UserId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                    b.Property<int>("Id")
+                        .HasColumnType("int");
 
                     b.Property<string>("Name")
                         .HasMaxLength(255)
                         .HasColumnType("nvarchar(255)");
 
-                    b.Property<int>("UserId1")
-                        .HasColumnType("int");
-
-                    b.HasKey("UserId");
-
-                    b.HasIndex("UserId1");
+                    b.HasKey("Id");
 
                     b.ToTable("Clinics");
                 });
@@ -50,7 +43,7 @@ namespace PetHealth.DAL.Migrations
                     b.Property<int>("PetId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("ClinicUserId")
+                    b.Property<int?>("ClinicId1")
                         .HasColumnType("int");
 
                     b.Property<DateTime?>("LastDate")
@@ -61,7 +54,7 @@ namespace PetHealth.DAL.Migrations
 
                     b.HasKey("ClinicId", "PetId");
 
-                    b.HasIndex("ClinicUserId");
+                    b.HasIndex("ClinicId1");
 
                     b.HasIndex("PetId");
 
@@ -177,8 +170,8 @@ namespace PetHealth.DAL.Migrations
             modelBuilder.Entity("PetHealth.DAL.Entities.Clinic", b =>
                 {
                     b.HasOne("PetHealth.DAL.Entities.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId1")
+                        .WithOne("Clinic")
+                        .HasForeignKey("PetHealth.DAL.Entities.Clinic", "Id")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -195,7 +188,7 @@ namespace PetHealth.DAL.Migrations
 
                     b.HasOne("PetHealth.DAL.Entities.Clinic", null)
                         .WithMany("Pets")
-                        .HasForeignKey("ClinicUserId");
+                        .HasForeignKey("ClinicId1");
 
                     b.HasOne("PetHealth.DAL.Entities.Pet", "Pet")
                         .WithMany()
@@ -254,6 +247,8 @@ namespace PetHealth.DAL.Migrations
 
             modelBuilder.Entity("PetHealth.DAL.Entities.User", b =>
                 {
+                    b.Navigation("Clinic");
+
                     b.Navigation("Pets");
                 });
 #pragma warning restore 612, 618

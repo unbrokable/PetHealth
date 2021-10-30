@@ -36,6 +36,7 @@ namespace PetHealth
 
             services.AddScoped<IJwtAuthorizationService, JwtAuthorizationService>();
             services.AddScoped<EmailManager>();
+            services.AddScoped<IHasher, Hasher>();
 
             services.AddJWT(Configuration);
             services.AddAutoMapper(typeof(Startup));
@@ -66,6 +67,12 @@ namespace PetHealth
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            app.UseCors(builder => builder
+               .WithOrigins("http://localhost:3000")
+               .AllowAnyHeader()
+               .AllowAnyMethod()
+               .AllowCredentials());
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();

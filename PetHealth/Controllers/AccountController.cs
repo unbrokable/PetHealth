@@ -6,6 +6,7 @@ using Microsoft.Extensions.Configuration;
 using PetHealth.DAL.Entities;
 using PetHealth.JWT;
 using PetHealth.Models.Authorize;
+using PetHealth.Services;
 using System;
 using System.Collections.Generic;
 using System.Security.Claims;
@@ -22,14 +23,16 @@ namespace PetHealth.Controllers
         private readonly IMapper _mapper;
         private readonly IJwtAuthorizationService _authorizationService;
         private readonly IConfiguration _configuration;
+        private readonly IHasher _hasher;
 
         public AccountController(ApplicationContext dataBase, IMapper mapper, IJwtAuthorizationService authorizationService,
-            IConfiguration configuration)
+            IConfiguration configuration, IHasher hasher)
         {
             this._configuration = configuration;
             this._dataBase = dataBase;
             this._mapper = mapper;
             this._authorizationService = authorizationService;
+            this._hasher = hasher;
         }
 
         [HttpPost("login")]
@@ -52,10 +55,18 @@ namespace PetHealth.Controllers
         {
             var user = _mapper.Map<User>(registration);
 
+            if(user.Role == Role.Owner)
+            {
+                user.Clinic = new Clinic
+                {
+                    Name = user.Name + " Clinic"
+                };
+            }
+
             await _dataBase
                 .Users
                 .AddAsync(user);
-
+           
             await _dataBase
                 .SaveChangesAsync();
 
@@ -111,6 +122,7 @@ namespace PetHealth.Controllers
                     IssuedAtClockTolerance = TimeSpan.FromSeconds(100)
                 });
         }
+        
         ActionResult GenerateAuthorizeResponse(User user)
         {
             var claims = new[] {

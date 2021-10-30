@@ -8,18 +8,19 @@ namespace PetHealth.DAL.Configuration
     {
         public void Configure(EntityTypeBuilder<ClinicPet> builder)
         {
+
             builder
                 .HasKey(i => new { i.ClinicId, i.PetId});
 
             builder
                  .HasOne(i => i.Pet)
-                 .WithMany()
+                 .WithMany(i => i.Clinics)
                  .HasForeignKey(i => i.PetId)
                  .OnDelete(DeleteBehavior.NoAction);
 
             builder
                 .HasOne(i => i.Clinic)
-                .WithMany()
+                .WithMany(i => i.Pets)
                 .HasForeignKey(i => i.ClinicId)
                 .OnDelete(DeleteBehavior.NoAction); ;
         }

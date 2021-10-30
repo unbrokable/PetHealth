@@ -59,19 +59,24 @@ namespace PetHealth.Controllers
                 .Add(new Clinic
                 {
                     Name = name,
-                    UserId = userId
+                    Id = userId
                 });
 
             await _dataBase
                 .SaveChangesAsync();
         }
 
-        [HttpPost("{clinicId}/pets/{petId}")]
-        public async Task AddPetClinic(int clinicId, int petId)
+        [HttpPost("pets/{petId}")]
+        public async Task AddPetClinic(int petId)
         {
+            var clinic = await _dataBase
+                .Clinics
+                .FirstOrDefaultAsync(i => i.User.Email == User.GetEmail());
+
             var clinicPet = await _dataBase
                 .ClinicPets
-                .FirstOrDefaultAsync(i => i.PetId == petId && i.ClinicId == clinicId);
+                .FirstOrDefaultAsync(i => i.PetId == petId
+                && clinic.Id == i.ClinicId);
 
             if (clinicPet is null)
             {
@@ -79,7 +84,7 @@ namespace PetHealth.Controllers
                     .ClinicPets
                     .AddAsync(new ClinicPet
                     {
-                        ClinicId = clinicId,
+                        ClinicId = clinic.Id,
                         PetId = petId,
                         LastDate = null
                     });
@@ -97,14 +102,18 @@ namespace PetHealth.Controllers
                 .SaveChangesAsync();
         }
 
-        [HttpDelete("{clinicId}/pets/{petId}")]
-        public async Task UnsubscribePet(int clinicId, int petId)
+        [HttpDelete("pets/{petId}")]
+        public async Task UnsubscribePet(int petId)
         {
+            var clinic = await _dataBase
+             .Clinics
+             .FirstOrDefaultAsync(i => i.User.Email == User.GetEmail());
+
             _dataBase
                  .ClinicPets
                  .Update(new ClinicPet
                  {
-                     ClinicId = clinicId,
+                     ClinicId = clinic.Id,
                      PetId = petId,
                      LastDate = DateTime.Now
                  });
@@ -113,13 +122,18 @@ namespace PetHealth.Controllers
                 .SaveChangesAsync();
         }
 
-        [HttpPost("{clinicId}/pets/records")]
-        public async Task AddHealthRecord(int clinicId, HealthRecordCreateViewModel healthRecordModel)
+        [HttpPost("pets/records")]
+        public async Task AddHealthRecord(HealthRecordCreateViewModel healthRecordModel)
         {
+            var clinic = await _dataBase
+               .Clinics
+               .FirstOrDefaultAsync(i => i.User.Email == User.GetEmail());
+
             var healthRecord = _mapper
                 .Map<HealthRecord>(healthRecordModel);
+            healthRecord.Date = DateTime.Now;
 
-            healthRecord.ClinicId = clinicId;
+            healthRecord.ClinicId = clinic.Id;
 
             await _dataBase
                 .HealthRecords

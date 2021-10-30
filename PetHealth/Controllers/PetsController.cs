@@ -16,24 +16,27 @@ namespace PetHealth.Controllers
     [Authorize]
     [Route("api/[controller]")]
     [ApiController]
-    public class PetController : ControllerBase
+    public class PetsController : ControllerBase
     {
         private readonly ApplicationContext _applicationContex;
         private readonly IMapper _mapper;
 
-        public PetController(ApplicationContext applicationContex, IMapper mapper)
+        public PetsController(ApplicationContext applicationContex, IMapper mapper)
         {
             this._mapper = mapper;
             this._applicationContex = applicationContex;
         }
 
-        [HttpGet("clinics/{id}")]
-        public async Task<IEnumerable<PetClinicViewModel>> GetClinicPets(int id)
+        [HttpGet("clinics")]
+        public async Task<IEnumerable<PetClinicViewModel>> GetClinicPets()
         {
-            var result =  await _applicationContex
+            var userEmail = User.GetEmail();
+
+            var result = await _applicationContex
                 .Pets
                 .Include(i => i.User)
-                .Where(i => i.Clinics.Any(j => j.ClinicId == id && j.LastDate == null))
+                .Where(i => i.Clinics
+                    .Any(j => j.Clinic.User.Email == userEmail && j.LastDate == null))
                 .ToListAsync();
 
             return _mapper
@@ -41,6 +44,34 @@ namespace PetHealth.Controllers
         }
 
         [HttpGet]
+        public async Task<IEnumerable<PetClinicViewModel>> GetPetsForClinic([FromQuery] string name)
+        {
+            var userEmail = User.GetEmail();
+
+            var result = await _applicationContex
+                .Pets
+                .Include(i => i.User)
+                .Where(i => i.Clinics
+                    .Any(j => j.Clinic.User.Email != userEmail && j.LastDate != null) || !i.Clinics.Any())
+                .Where(i => i.Name.Contains(name??""))
+                .ToListAsync();
+
+            return _mapper
+                .Map<IEnumerable<PetClinicViewModel>>(result);
+        }
+
+        [HttpGet("{id}")]
+        public async Task<PetClinicViewModel> GetPet(int id)
+        {
+            var pet = await _applicationContex
+                .Pets
+                .FirstOrDefaultAsync(i => i.Id == id);
+
+            return _mapper
+                .Map<PetClinicViewModel>(pet);
+        }
+
+        [HttpGet("users")]
         public async Task<IEnumerable<PetViewModel>> GetUserPets()
         {
             int id = (await _applicationContex
@@ -57,16 +88,16 @@ namespace PetHealth.Controllers
               .Map<IEnumerable<PetViewModel>>(result);
         }
 
-        [HttpPut("id")]
-        public async Task UpdatePet(int id, PetCreateViewModel petView)
+        [HttpPut]
+        public async Task UpdatePet(PetUpdateViewModel petView)
         {
             var pet = await _applicationContex
                 .Pets
-                .FirstOrDefaultAsync(i => i.Id == id);
+                .FirstOrDefaultAsync(i => i.Id == petView.Id);
 
              _applicationContex
                 .Pets
-                .Update(pet.Updata(pet));
+                .Update(pet.Updata(petView));
 
             await _applicationContex
                 .SaveChangesAsync();

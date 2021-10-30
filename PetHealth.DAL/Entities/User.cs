@@ -5,7 +5,8 @@ namespace PetHealth.DAL.Entities
     public enum Role
     {
         User, 
-        Admin
+        Owner,
+        Admin,
     } 
     
     public class User
@@ -17,8 +18,8 @@ namespace PetHealth.DAL.Entities
         public bool IsDeleted { get; set; }
         
         public Role Role { get; set; }
+        public Clinic Clinic { get; set; }
 
-        
         public IEnumerable<Pet> Pets { get; set; }
     }
 }
