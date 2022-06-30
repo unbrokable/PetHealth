@@ -8,7 +8,7 @@ using PetHealth.Models.User;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Tutor.DAL;
+using PetHealth.DAL;
 
 namespace PetHealth.Controllers
 {
@@ -96,18 +96,6 @@ namespace PetHealth.Controllers
 
             await _applicationContext
               .SaveChangesAsync();
-        }
-
-        [HttpPost("damp")]
-        public async Task Damp(string location)
-        {
-            string dbname = _applicationContext.Database.GetDbConnection().ConnectionString;
-            string sqlCommand = @"BACKUP DATABASE [{0}] TO  DISK = N'{1}' WITH NOFORMAT, NOINIT,  NAME = N'MyAir-Full Database Backup', SKIP, NOREWIND, NOUNLOAD,  STATS = 10";
-            
-            _applicationContext
-                .Database
-                .ExecuteSqlRaw 
-                (string.Format(sqlCommand, dbname, location));
         }
      }
 }

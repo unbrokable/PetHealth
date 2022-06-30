@@ -1,15 +1,19 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
+using PetHealth.Hubs;
 using PetHealth.JWT;
 using PetHealth.Services;
 using System;
-using Tutor.DAL;
+using PetHealth.DAL;
+using DinkToPdf;
+using DinkToPdf.Contracts;
 
 namespace PetHealth
 {
@@ -62,6 +66,11 @@ namespace PetHealth
                        { jwtSecurityScheme, Array.Empty<string>() }
                 });
             });
+
+            services.AddSignalR();
+            services.AddSingleton<IUserIdProvider, UserEmailIdProvider>();
+
+            services.AddSingleton(typeof(IConverter), new SynchronizedConverter(new PdfTools()));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -69,6 +78,7 @@ namespace PetHealth
         {
             app.UseCors(builder => builder
                .WithOrigins("http://localhost:3000")
+               .WithOrigins("http://localhost:3001")
                .AllowAnyHeader()
                .AllowAnyMethod()
                .AllowCredentials());
@@ -92,6 +102,8 @@ namespace PetHealth
 
             app.UseEndpoints(endpoints =>
             {
+                endpoints.MapHub<NotificationHub>("/hubs/notification");
+                endpoints.MapHub<MessageHub>("/hubs/message");
                 endpoints.MapControllers();
             });
         }

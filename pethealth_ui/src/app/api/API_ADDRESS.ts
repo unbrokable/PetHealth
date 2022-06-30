@@ -1,4 +1,4 @@
-const HOST_API = "https://localhost:44359/api/";
+export const HOST_API = "https://localhost:5001/api/";
 //export const HUB_NOTIFICATION_API = "https://localhost:44392/hubs/notification";
 
 // authorize
@@ -22,5 +22,5 @@ export const HEALTH_RECORD_API = HOST_API + "healthrecords";
 
 // clinic
 
-export const CLINIC_API = HOST_API + "clinic";
-export const CLINIC_PETS_API = HOST_API + "clinic/pets";
+export const CLINIC_API = HOST_API + "clinics";
+export const CLINIC_PETS_API = HOST_API + "clinics/pets";

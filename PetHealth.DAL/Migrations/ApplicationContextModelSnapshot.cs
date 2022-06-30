@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using Tutor.DAL;
+using PetHealth.DAL;
 
 namespace PetHealth.DAL.Migrations
 {
@@ -19,6 +19,76 @@ namespace PetHealth.DAL.Migrations
                 .HasAnnotation("ProductVersion", "5.0.10")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+            modelBuilder.Entity("ChatClinic", b =>
+                {
+                    b.Property<int>("ChatsId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ClinicsId")
+                        .HasColumnType("int");
+
+                    b.HasKey("ChatsId", "ClinicsId");
+
+                    b.HasIndex("ClinicsId");
+
+                    b.ToTable("ChatClinic");
+                });
+
+            modelBuilder.Entity("ChatUser", b =>
+                {
+                    b.Property<int>("ChatsId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("UsersId")
+                        .HasColumnType("int");
+
+                    b.HasKey("ChatsId", "UsersId");
+
+                    b.HasIndex("UsersId");
+
+                    b.ToTable("ChatUser");
+                });
+
+            modelBuilder.Entity("PetHealth.DAL.Entities.AvailableTime", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int?>("ClinicId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("EndDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("StartDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ClinicId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("AvailableTimes");
+                });
+
+            modelBuilder.Entity("PetHealth.DAL.Entities.Chat", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Chats");
+                });
+
             modelBuilder.Entity("PetHealth.DAL.Entities.Clinic", b =>
                 {
                     b.Property<int>("Id")
@@ -27,6 +97,9 @@ namespace PetHealth.DAL.Migrations
                     b.Property<string>("Name")
                         .HasMaxLength(255)
                         .HasColumnType("nvarchar(255)");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -41,24 +114,39 @@ namespace PetHealth.DAL.Migrations
                     b.Property<int>("PetId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("ClinicId1")
-                        .HasColumnType("int");
-
                     b.Property<DateTime?>("LastDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<int?>("PetId1")
-                        .HasColumnType("int");
-
                     b.HasKey("ClinicId", "PetId");
-
-                    b.HasIndex("ClinicId1");
 
                     b.HasIndex("PetId");
 
-                    b.HasIndex("PetId1");
-
                     b.ToTable("ClinicPets");
+                });
+
+            modelBuilder.Entity("PetHealth.DAL.Entities.Comment", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("ClinicId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Text")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ClinicId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Comments");
                 });
 
             modelBuilder.Entity("PetHealth.DAL.Entities.HealthRecord", b =>
@@ -99,6 +187,31 @@ namespace PetHealth.DAL.Migrations
                     b.HasIndex("PetId");
 
                     b.ToTable("HealthRecords");
+                });
+
+            modelBuilder.Entity("PetHealth.DAL.Entities.Message", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("ChatId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Text")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ChatId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Messages");
                 });
 
             modelBuilder.Entity("PetHealth.DAL.Entities.Pet", b =>
@@ -165,6 +278,72 @@ namespace PetHealth.DAL.Migrations
                     b.ToTable("Users");
                 });
 
+            modelBuilder.Entity("PetHealth.DAL.Entities.Visit", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("ClinicId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ClinicId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Visits");
+                });
+
+            modelBuilder.Entity("ChatClinic", b =>
+                {
+                    b.HasOne("PetHealth.DAL.Entities.Chat", null)
+                        .WithMany()
+                        .HasForeignKey("ChatsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("PetHealth.DAL.Entities.Clinic", null)
+                        .WithMany()
+                        .HasForeignKey("ClinicsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("ChatUser", b =>
+                {
+                    b.HasOne("PetHealth.DAL.Entities.Chat", null)
+                        .WithMany()
+                        .HasForeignKey("ChatsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("PetHealth.DAL.Entities.User", null)
+                        .WithMany()
+                        .HasForeignKey("UsersId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("PetHealth.DAL.Entities.AvailableTime", b =>
+                {
+                    b.HasOne("PetHealth.DAL.Entities.Clinic", null)
+                        .WithMany("AvailableTimes")
+                        .HasForeignKey("ClinicId");
+
+                    b.HasOne("PetHealth.DAL.Entities.User", null)
+                        .WithMany("AvailableTimes")
+                        .HasForeignKey("UserId");
+                });
+
             modelBuilder.Entity("PetHealth.DAL.Entities.Clinic", b =>
                 {
                     b.HasOne("PetHealth.DAL.Entities.User", "User")
@@ -179,28 +358,39 @@ namespace PetHealth.DAL.Migrations
             modelBuilder.Entity("PetHealth.DAL.Entities.ClinicPet", b =>
                 {
                     b.HasOne("PetHealth.DAL.Entities.Clinic", "Clinic")
-                        .WithMany()
+                        .WithMany("Pets")
                         .HasForeignKey("ClinicId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("PetHealth.DAL.Entities.Clinic", null)
-                        .WithMany("Pets")
-                        .HasForeignKey("ClinicId1");
-
                     b.HasOne("PetHealth.DAL.Entities.Pet", "Pet")
-                        .WithMany()
+                        .WithMany("Clinics")
                         .HasForeignKey("PetId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("PetHealth.DAL.Entities.Pet", null)
-                        .WithMany("Clinics")
-                        .HasForeignKey("PetId1");
-
                     b.Navigation("Clinic");
 
                     b.Navigation("Pet");
+                });
+
+            modelBuilder.Entity("PetHealth.DAL.Entities.Comment", b =>
+                {
+                    b.HasOne("PetHealth.DAL.Entities.Clinic", "Clinic")
+                        .WithMany("Comments")
+                        .HasForeignKey("ClinicId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("PetHealth.DAL.Entities.User", "User")
+                        .WithMany("Comments")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("Clinic");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("PetHealth.DAL.Entities.HealthRecord", b =>
@@ -222,6 +412,23 @@ namespace PetHealth.DAL.Migrations
                     b.Navigation("Pet");
                 });
 
+            modelBuilder.Entity("PetHealth.DAL.Entities.Message", b =>
+                {
+                    b.HasOne("PetHealth.DAL.Entities.Chat", "Chat")
+                        .WithMany("Messages")
+                        .HasForeignKey("ChatId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("PetHealth.DAL.Entities.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId");
+
+                    b.Navigation("Chat");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("PetHealth.DAL.Entities.Pet", b =>
                 {
                     b.HasOne("PetHealth.DAL.Entities.User", "User")
@@ -233,9 +440,39 @@ namespace PetHealth.DAL.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("PetHealth.DAL.Entities.Visit", b =>
+                {
+                    b.HasOne("PetHealth.DAL.Entities.Clinic", "Clinic")
+                        .WithMany("Visits")
+                        .HasForeignKey("ClinicId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("PetHealth.DAL.Entities.User", "User")
+                        .WithMany("Visits")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("Clinic");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("PetHealth.DAL.Entities.Chat", b =>
+                {
+                    b.Navigation("Messages");
+                });
+
             modelBuilder.Entity("PetHealth.DAL.Entities.Clinic", b =>
                 {
+                    b.Navigation("AvailableTimes");
+
+                    b.Navigation("Comments");
+
                     b.Navigation("Pets");
+
+                    b.Navigation("Visits");
                 });
 
             modelBuilder.Entity("PetHealth.DAL.Entities.Pet", b =>
@@ -245,9 +482,15 @@ namespace PetHealth.DAL.Migrations
 
             modelBuilder.Entity("PetHealth.DAL.Entities.User", b =>
                 {
+                    b.Navigation("AvailableTimes");
+
                     b.Navigation("Clinic");
 
+                    b.Navigation("Comments");
+
                     b.Navigation("Pets");
+
+                    b.Navigation("Visits");
                 });
 #pragma warning restore 612, 618
         }

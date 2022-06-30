@@ -48,7 +48,9 @@ const PetUpdate = ({ id }: any) => {
       <Form.Item label="Birthday" name="birthday">
         <TimePicker
           value={moment(state.birthDay)}
-          onChange={(value) => dispatch(setPetUpdateDate(value?.toDate()!))}
+          onChange={(value: any) =>
+            dispatch(setPetUpdateDate(value?.toDate()!))
+          }
         />
       </Form.Item>
     </Modal>

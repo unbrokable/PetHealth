@@ -10,10 +10,16 @@ const OwnerMenu = () => {
     <>
       <Menu theme="dark" mode="horizontal" direction="rtl">
         <Menu.Item>
-          <Link to="/clinic">Clinic</Link>
+          <Link to="/clinicpets">Clinic pets</Link>
+        </Menu.Item>
+        <Menu.Item>
+          <Link to="/clinics/0">Clinic</Link>
         </Menu.Item>
         <Menu.Item>
           <Link to="/clinic/addpet">Add pet</Link>
+        </Menu.Item>
+        <Menu.Item>
+          <Link to="/chats">Chats</Link>
         </Menu.Item>
         <Menu.Item>
           <Menu.Item>

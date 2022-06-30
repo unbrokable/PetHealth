@@ -1,10 +1,8 @@
-﻿using MimeKit;
-using System;
+﻿using MailKit.Net.Smtp;
+using MimeKit;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
-using MailKit.Net.Smtp;
 
 namespace PetHealth.Services
 {

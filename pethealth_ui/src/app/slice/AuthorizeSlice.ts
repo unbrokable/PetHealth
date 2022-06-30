@@ -19,13 +19,13 @@ export const authorizeSlice = createSlice({
   name: "authorize",
   initialState,
   reducers: {
-    setAuthorize: (state, action: PayloadAction<boolean>) => {
+    setAuthorize: (state: AuthorizeState, action: PayloadAction<boolean>) => {
       return {
         ...state,
         isAuthorize: action.payload,
       };
     },
-    setRole: (state, action: PayloadAction<string | null>) => {
+    setRole: (state: AuthorizeState, action: PayloadAction<string | null>) => {
       return {
         ...state,
         role: action.payload,

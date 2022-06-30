@@ -1,9 +1,10 @@
+import { authApi } from "./../../api/authApi";
 import { jwtService } from "./../../jwtService";
 import { AppThunk, RootState } from "./../../store";
-import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { login } from "./../../api/function/authorizeAPI";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { setAuthorize, setRole } from "../AuthorizeSlice";
 import { setError } from "../notificationSlice";
+import { handleAuthResponse } from "../../../utils/functions";
 export interface LoginState {
   email?: string;
   password?: string;
@@ -11,25 +12,17 @@ export interface LoginState {
 
 const initialState: LoginState = {};
 
-export const loginAsync = createAsyncThunk(
-  "loginSlice/login",
-  async (data: LoginState) => {
-    const response = await login(data);
-    return response.data;
-  }
-);
-
 export const loginSlice = createSlice({
   name: "login",
   initialState,
   reducers: {
-    setEmail: (state, action: PayloadAction<string>) => {
+    setEmail: (state: LoginState, action: PayloadAction<string>) => {
       return {
         ...state,
         email: action.payload,
       };
     },
-    setPassword: (state, action: PayloadAction<string>) => {
+    setPassword: (state: LoginState, action: PayloadAction<string>) => {
       return {
         ...state,
         password: action.payload,
@@ -38,15 +31,18 @@ export const loginSlice = createSlice({
   },
 });
 
-export const { setPassword, setEmail } = loginSlice.actions;
+export const loginActions = loginSlice.actions;
+
 export default loginSlice.reducer;
 
 export const selectLogin = (state: RootState) => state.login;
 
 export const loginThunk = (): AppThunk => (dispatch, getState) => {
   const state = selectLogin(getState());
-  dispatch(loginAsync(state)).then((a) => {
-    if (a?.type?.endsWith("fulfilled")) {
+
+  dispatch(authApi.endpoints.login.initiate(state)).then((response) => {
+    if ("data" in response) {
+      handleAuthResponse(response.data);
       dispatch(setAuthorize(true));
       dispatch(setRole(jwtService.getRole()!));
     } else {
@@ -54,3 +50,19 @@ export const loginThunk = (): AppThunk => (dispatch, getState) => {
     }
   });
 };
+
+export const loginWithGoogle =
+  (token: string): AppThunk =>
+  (dispatch) => {
+    dispatch(authApi.endpoints.loginWithGoogle.initiate(token)).then(
+      (response) => {
+        if ("data" in response) {
+          handleAuthResponse(response.data);
+          dispatch(setAuthorize(true));
+          dispatch(setRole(jwtService.getRole()!));
+        } else {
+          dispatch(setError("login"));
+        }
+      }
+    );
+  };

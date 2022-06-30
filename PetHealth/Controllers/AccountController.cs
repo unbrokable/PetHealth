@@ -11,7 +11,7 @@ using System;
 using System.Collections.Generic;
 using System.Security.Claims;
 using System.Threading.Tasks;
-using Tutor.DAL;
+using PetHealth.DAL;
 
 namespace PetHealth.Controllers
 {
@@ -59,7 +59,7 @@ namespace PetHealth.Controllers
             {
                 user.Clinic = new Clinic
                 {
-                    Name = user.Name + " Clinic"
+                    Name = registration.ClinicName
                 };
             }
 
@@ -73,7 +73,7 @@ namespace PetHealth.Controllers
             return GenerateAuthorizeResponse(user);
         }
 
-        [HttpPost("google")]
+        [HttpPost("google/{token}")]
         public async Task<ActionResult> Google(string token)
         {
             GoogleJsonWebSignature.Payload userInfo;
@@ -106,6 +106,8 @@ namespace PetHealth.Controllers
                     Role = Role.User
                 };
 
+                _dataBase.Add(user);
+
                 await _dataBase
                     .SaveChangesAsync();
             }
@@ -127,7 +129,7 @@ namespace PetHealth.Controllers
         {
             var claims = new[] {
                 new Claim(ClaimTypes.Email, user.Email),
-                new Claim(ClaimTypes.Role,nameof(user.Role))
+                new Claim(ClaimTypes.Role, user.Role.ToString())
             };
 
             var data = _authorizationService

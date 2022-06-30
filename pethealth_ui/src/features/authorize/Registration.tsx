@@ -3,6 +3,7 @@ import { Form, Input, Button, Select } from "antd";
 import {
   registrateThunk,
   selectRegistration,
+  setClinicName,
   setRegistrationEmail,
   setRegistrationName,
   setRegistrationPassword,
@@ -68,8 +69,17 @@ const Registration = () => {
             <Option value={RoleType.Owner}>{RoleType[RoleType.Owner]}</Option>
           </Select>
         </Form.Item>
-        <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
-          <Button type="primary" htmlType="submit">
+        {state.role === RoleType.Owner ? (
+          <Form.Item name="clinicName" label={t("common.cn")}>
+            <Input
+              value={state.clinicName}
+              onChange={(e) => dispatch(setClinicName(e.target.value))}
+            />
+          </Form.Item>
+        ) : null}
+
+        <Form.Item wrapperCol={{ offset: 8, span: 8 }}>
+          <Button type="primary" htmlType="submit" style={{ width: "100%" }}>
             {t("menu.r")}
           </Button>
         </Form.Item>

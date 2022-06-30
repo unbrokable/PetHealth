@@ -1,4 +1,4 @@
-import { Button, Col, Row, Table } from "antd";
+import { Button, Col, Divider, Row, Table } from "antd";
 import { useEffect } from "react";
 import {
   Route,
@@ -75,11 +75,11 @@ const Pet = () => {
           <ClinicRecordAdd id={id} />
         </Route>
       </Switch>
+      <Divider orientation="center">Pet Name</Divider>
       <Row>
-        <Col>{state.id}</Col>
-      </Row>
-      <Row>
-        <Col>{state.name}</Col>
+        <Col span={24}>
+          <h3 style={{ textAlign: "center" }}>{state.name}</h3>
+        </Col>
       </Row>
       <Table
         dataSource={state.records ?? []}

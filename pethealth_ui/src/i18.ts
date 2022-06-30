@@ -23,6 +23,7 @@ i18n
             login: "User don't exist",
           },
           common: {
+            cn: "Clinic name",
             a: "Add",
             rec: "Recover",
             rem: "Remove",
@@ -56,6 +57,7 @@ i18n
             login: "Користувача не існує",
           },
           common: {
+            cn: "Ім'я клініки",
             a: "Додати",
             rec: "Возобновити",
             rem: "Видалити",

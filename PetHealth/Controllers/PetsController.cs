@@ -9,7 +9,7 @@ using PetHealth.Models.Pet;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Tutor.DAL;
+using PetHealth.DAL;
 
 namespace PetHealth.Controllers
 {
@@ -120,6 +120,82 @@ namespace PetHealth.Controllers
 
             await _applicationContex
                 .SaveChangesAsync();
+        }
+
+        [HttpGet("health")]
+        public async Task<IEnumerable<PetHealthReportViewModel>> GetHealthReport()
+        {
+            var userId = (await _applicationContex
+                .Users
+                .FirstOrDefaultAsync(i => i.Email == User.GetEmail())).Id;
+
+            var pets = _applicationContex
+                .Pets
+                .Where(i => i.UserId == userId)
+                .ToList();
+
+            List<PetHealthReportViewModel> report = new ();
+
+            foreach (Pet pet in pets)
+            {
+                var healths = await _applicationContex
+                    .HealthRecords
+                    .Where(i => i.PetId == pet.Id)
+                    .ToListAsync();
+
+                if (!healths.Any())
+                {
+                    report.Add(new PetHealthReportViewModel
+                    {
+                        Id = pet.Id,
+                        Name = pet.Name,
+                        Condition = HealthCondition.Good.ToString(),
+                    });
+
+                    continue;
+                }
+
+                decimal tempIncrease = healths.Max(i => i.Temperature) 
+                    - healths.Min(i => i.Temperature);
+
+                decimal weightIncrease = healths.Max(i => i.Weight)
+                    - healths.Min(i => i.Weight);
+
+                foreach (var health in healths)
+                {
+                    tempIncrease = health.Temperature  - (tempIncrease + health.Temperature) / 2;
+                    weightIncrease = health.Weight  - (weightIncrease + health.Weight) / 2;
+                }
+
+                decimal avgIncrease = (tempIncrease + weightIncrease) / 2;
+
+                decimal avg = (healths.Average(i => i.Weight) + healths.Average(i => i.Weight)) / 2;
+
+                decimal interest = avg / (avgIncrease > 0 ? avgIncrease / 100 : (avgIncrease * -1) / 100);   
+
+                report.Add(new PetHealthReportViewModel
+                {
+                    Id = pet.Id,
+                    Name = pet.Name,
+                    Condition = GetCondition(interest).ToString(),
+                });
+            }
+
+            return report;
+        }
+
+        private HealthCondition GetCondition(decimal condition)
+        {
+            if (condition >= (int)HealthCondition.Critical)
+                return HealthCondition.Critical;
+
+            else if (condition >= (int)HealthCondition.Bad)
+                return HealthCondition.Bad;
+
+            else if (condition >= (int)HealthCondition.Normal)
+                return HealthCondition.Normal;
+
+            return HealthCondition.Good;
         }
     }
 }

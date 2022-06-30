@@ -6,7 +6,11 @@ export const jwtService = {
     localStorage.setItem(JWT, value);
   },
   get: () => {
-    return localStorage.getItem(JWT);
+    try {
+      return localStorage.getItem(JWT);
+    } catch {
+      return null;
+    }
   },
   remove: () => {
     localStorage.clear();

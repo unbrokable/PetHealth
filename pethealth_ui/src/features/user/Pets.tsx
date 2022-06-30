@@ -1,5 +1,5 @@
-import { Button, Table } from "antd";
-import { useEffect } from "react";
+import { Button, Modal, Table } from "antd";
+import { useEffect, useState } from "react";
 import { useHistory, useRouteMatch } from "react-router";
 import { Link, Route, Switch } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
@@ -53,7 +53,7 @@ const Pets = () => {
   return (
     <>
       <Switch>
-        <Route exact path={`${path}/add`}>
+        <Route path={`${path}/add`}>
           <PetAdd />
         </Route>
       </Switch>

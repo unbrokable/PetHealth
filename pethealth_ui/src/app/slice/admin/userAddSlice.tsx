@@ -27,25 +27,37 @@ export const userAddSlice = createSlice({
   name: "useradd",
   initialState,
   reducers: {
-    setUserAddName: (state, { payload }: PayloadAction<string>) => {
+    setUserAddName: (
+      state: UserAddState,
+      { payload }: PayloadAction<string>
+    ) => {
       return {
         ...state,
         name: payload,
       };
     },
-    setUserAddEmail: (state, { payload }: PayloadAction<string>) => {
+    setUserAddEmail: (
+      state: UserAddState,
+      { payload }: PayloadAction<string>
+    ) => {
       return {
         ...state,
         email: payload,
       };
     },
-    setUserAddPassword: (state, { payload }: PayloadAction<string>) => {
+    setUserAddPassword: (
+      state: UserAddState,
+      { payload }: PayloadAction<string>
+    ) => {
       return {
         ...state,
         password: payload,
       };
     },
-    setUserAddRole: (state, { payload }: PayloadAction<number>) => {
+    setUserAddRole: (
+      state: UserAddState,
+      { payload }: PayloadAction<number>
+    ) => {
       return {
         ...state,
         role: payload,

@@ -12,13 +12,19 @@ export const errorSlice = createSlice({
   name: "errorSlice",
   initialState,
   reducers: {
-    setError: (state, { payload }: PayloadAction<string | undefined>) => {
+    setError: (
+      state: ErrorState,
+      { payload }: PayloadAction<string | undefined>
+    ) => {
       return {
         ...state,
         errorMessage: payload,
       };
     },
-    setMessage: (state, { payload }: PayloadAction<string | undefined>) => {
+    setMessage: (
+      state: ErrorState,
+      { payload }: PayloadAction<string | undefined>
+    ) => {
       return {
         ...state,
         message: payload,

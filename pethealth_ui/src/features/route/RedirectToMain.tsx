@@ -9,9 +9,9 @@ const RedirectToMain = () => {
     if (role === RoleType[RoleType.Admin]) {
       return "/users";
     } else if (role === RoleType[RoleType.Owner]) {
-      return "/clinic";
+      return "/clinicpets";
     } else {
-      return "/as";
+      return "/pets";
     }
   };
   let token = jwtService.get();

@@ -24,19 +24,19 @@ export const petAddSlice = createSlice({
   name: "petAdd",
   initialState,
   reducers: {
-    setPetAddName: (state, { payload }: PayloadAction<string>) => {
+    setPetAddName: (state: PetAddState, { payload }: PayloadAction<string>) => {
       return {
         ...state,
         name: payload,
       };
     },
-    setPetAddDate: (state, { payload }: PayloadAction<Date>) => {
+    setPetAddDate: (state: PetAddState, { payload }: PayloadAction<Date>) => {
       return {
         ...state,
         birthDay: payload,
       };
     },
-    setPetAddKind: (state, { payload }: PayloadAction<string>) => {
+    setPetAddKind: (state: PetAddState, { payload }: PayloadAction<string>) => {
       return {
         ...state,
         kind: payload,
